@@ -97,9 +97,9 @@ func GetPaddedParam(param []Param) ([]byte, error) {
 	arguments := eABI.Arguments{}
 
 	for _, p := range param {
-		// if len(p) != 1 {
-		// 	return nil, fmt.Errorf("invalid param %+v", p)
-		// }
+		if len(p) != 1 {
+			return nil, fmt.Errorf("invalid param %+v", p)
+		}
 		for k, v := range p {
 			ty, err := eABI.NewType(k, "", nil)
 			if err != nil {
