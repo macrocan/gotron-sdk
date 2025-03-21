@@ -79,6 +79,30 @@ func (g *GrpcClient) UpdateSettingContract(from, contractAddress string, value i
 	return tx, err
 }
 
+// TriggerMyContract and return tx result
+func (g *GrpcClient) TriggerMyContract(from, contractAddress string, data []byte) (*api.TransactionExtention, error) {
+	var err error
+	fromDesc := address.HexToAddress("410000000000000000000000000000000000000000")
+	if len(from) > 0 {
+		fromDesc, err = address.Base58ToAddress(from)
+		if err != nil {
+			return nil, err
+		}
+	}
+	contractDesc, err := address.Base58ToAddress(contractAddress)
+	if err != nil {
+		return nil, err
+	}
+
+	ct := &core.TriggerSmartContract{
+		OwnerAddress:    fromDesc.Bytes(),
+		ContractAddress: contractDesc.Bytes(),
+		Data:            data,
+	}
+
+	return g.triggerConstantContract(ct)
+}
+
 // TriggerConstantContract and return tx result
 func (g *GrpcClient) TriggerConstantContract(from, contractAddress, method, jsonString string) (*api.TransactionExtention, error) {
 	var err error
